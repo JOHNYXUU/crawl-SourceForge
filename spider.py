@@ -76,7 +76,10 @@ def get_user_reviews(index):
     users_reviews = {}
     while page :
         review_url = index + 'reviews/?offset={}#reviews'.format((page-1)*25)
-        html = get_review_page_text(review_url)
+        try:
+            html = get_review_page_text(review_url)
+        except:
+            break
         doc = pq(html)
         stop_sign1 = doc.find('.info-no-reviews').text()
         stop_sign2 = (doc.find('.main-content .row p').text() == 'This project does not allow reviews to be posted.')
@@ -127,7 +130,7 @@ def get_item_information(item_html,index):
     return item_infos
 
 def write_to_file(infos):
-    with open('/root/SourceForgelinxjava/data.txt','a',encoding='utf-8') as f:
+    with open('C:\\Users\\11634\\Desktop\\Python\\爬虫\\实战\\SourceForgelinxjava\\data.txt','a',encoding='utf-8') as f:
         f.write(json.dumps(infos,ensure_ascii=False)+'\n')
         f.close()
 
@@ -138,8 +141,7 @@ def main(page):
     for index in indexs:
         item_html = get_item_page_text(index)
         infors = get_item_information(item_html,index)
-        print(infors)
-        # write_to_file(infors)
+        write_to_file(infors)
 
 if __name__ == '__main__':
     start = perf_counter()
