@@ -8,34 +8,14 @@ import os
 from config import*
 from time import perf_counter
 
-def get_main_page_text(url):
+def get_page_text(url):
     try:
         res = requests.get(url)
         if res.status_code == 200:
             return res.text
         return None
     except RE:
-        print('ERROR when requesting main page')
-        return None
-
-def get_item_page_text(index):
-    try:
-        res = requests.get(index)
-        if res.status_code == 200:
-            return res.text
-        return None
-    except RE:
-        print('ERROR when requesting item page')
-        return  None
-
-def get_review_page_text(review_url):
-    try:
-        res = requests.get(review_url)
-        if res.status_code == 200:
-            return res.text
-        return None
-    except RE:
-        print('ERROR when requesting review page{}'.format(review_url))
+        print('ERROR when requesting this page{}'.format(url))
         return  None
 
 def get_item_index(html):
@@ -77,7 +57,7 @@ def get_user_reviews(index):
     while page :
         review_url = index + 'reviews/?offset={}#reviews'.format((page-1)*25)
         try:
-            html = get_review_page_text(review_url)
+            html = get_page_text(review_url)
         except:
             break
         doc = pq(html)
@@ -137,10 +117,10 @@ def write_to_file(infos):
 
 def main(page):
     url = url_head + '?page={}'.format(page)
-    html = get_main_page_text(url)
+    html = get_page_text(url)
     indexs = get_item_index(html)
     for index in indexs:
-        item_html = get_item_page_text(index)
+        item_html = get_page_text(index)
         infors = get_item_information(item_html,index)
         write_to_file(infors)
 
