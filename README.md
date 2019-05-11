@@ -8,6 +8,8 @@ here is the url https://sourceforge.net/directory/language:java/os:linux/
 
 of course it is undone yet.
 
+can only crawl for 999 pages yet.
+
 You can now crawl these information (for now):
         name
         summary
