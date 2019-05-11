@@ -110,6 +110,7 @@ def get_item_information(item_html,index):
     doc = pq(item_html)
     name = doc('.title h1').text()
     summary = doc('.main-content .description').text()
+    summary = summary.replace('\n','')
     user_ratings = get_item_user_ratings(doc)
     try:
         Categories = doc('.main-content .row.psp-section .small-12.medium-5.columns').text().split('\n')[1][:-8]
