@@ -35,7 +35,7 @@ def get_review_page_text(review_url):
             return res.text
         return None
     except RE:
-        print('ERROR when requesting review page')
+        print('ERROR when requesting review page{}'.format(review_url))
         return  None
 
 def get_item_index(html):
