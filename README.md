@@ -25,7 +25,7 @@ if you want to use this program,please read tips below:
 3
         remember too change the dir_name in your PC
         
-        in spider.py line 160
+        in config.py line3
         
 4
         You can now crawl these information (for now):
