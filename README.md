@@ -2,7 +2,7 @@
 
 ## Summary:
 
-This is a file for crawling information of projects on **SourceForge**.
+This is a crawler for crawling information of projects on **SourceForge**.
 
 In this repository , i just crawled projects of **java in linux**
 
@@ -21,7 +21,7 @@ Here is the url https://sourceforge.net/directory/language:java/os:linux/
         
         if the number of projects that in your category is too large,
         
-        this code will turn into error,too :)
+        this code will run into error :)
 
         advice:no more than 25000 in English category
         
@@ -31,6 +31,11 @@ Here is the url https://sourceforge.net/directory/language:java/os:linux/
         
 ###      4 run spider.py in pycharm or other IDE 
 
+###      5 make sure the Internet in your country is good
+
+         'good' means for browsering Sourceforge
+          or you'll need a server in other country
+         
 ## Information you can crawl (for now):
 
         name
