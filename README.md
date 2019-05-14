@@ -6,25 +6,38 @@ for testing , i just crawled projects of java in linux
 
 here is the url https://sourceforge.net/directory/language:java/os:linux/
 
-of course it is undone yet.
+if you want to use this program,please read tips below:
+1
+        if you want to crawl other categories , just change the url in config.py
 
-can only crawl for 999 pages yet.
+        However,please do not select any selections of translations,
+        
+        because i use it to classfiy those projects
 
-You can now crawl these information (for now):
+        if you use selections of translations,this code will turn into error
 
-        name
+2
+        please control the number of projects that in your category
+        
+        the number of projects that in your category is too large,this code will turn into error,too(:)sorry,i am a newbie for python)
 
-        summary
 
-        user-ratings : average rating
-                       number of stars(1 star  ... and 5 stars)
-                       dimensional_ratings
+3
+        You can now crawl these information (for now):
 
-        Categories(may be none)
+                name
 
-        License(may be none)
+                summary
 
-        user_reviews (may be none) :  for each user: user_name
-                                      number of stars
-                                      review
-                                      number of people thinking it useful
+                user-ratings : average rating
+                               number of stars(1 star  ... and 5 stars)
+                               dimensional_ratings
+
+                Categories(may be none)
+
+                License(may be none)
+
+                user_reviews (may be none) :  for each user: user_name
+                                              number of stars
+                                              review
+                                              number of people thinking it useful(may be none)
