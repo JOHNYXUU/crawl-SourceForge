@@ -25,7 +25,7 @@ Here is the url https://sourceforge.net/directory/language:java/os:linux/
 
         advice:no more than 25000 in English category
         
-###      3 remember too change the dir_name in your PC :
+###      3 remember to change the dir_name in your PC :
         
         in config.py line3
         
