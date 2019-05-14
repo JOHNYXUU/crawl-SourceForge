@@ -33,7 +33,7 @@ Here is the url https://sourceforge.net/directory/language:java/os:linux/
 
 ###      5 make sure the Internet in your country is good
 
-         'good' means for browsering Sourceforge
+         'good' means for browsing Sourceforge
           or you'll need a server in other country
          
 ## Information you can crawl (for now):
