@@ -25,13 +25,13 @@ To use this program, please follow the steps below:
 ````yml
 name
 summary
-user-ratings: average rating
+user-ratings:   average rating
                 number of stars(1 star  ... and 5 stars)
                 dimensional_ratings
 Categories(may be none)
 License(may be none)
 user_reviews (may be none) :  
-                for each user: user_name
+                for each user:  user_name
                                 number of stars
                                 review
                                 the number of people thinking it useful (maybe none)
