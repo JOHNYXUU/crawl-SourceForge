@@ -155,12 +155,12 @@ def write_to_file(infos,url_head):#写入本地文件
     trans = ''
     for type in translation:
         if type in url_head:
-            trans += type
+            trans = type
             break
-    dir_name = '/root/SourceForgelinxjava/data/{}'.format(trans)#改成你的文件目录（注意这是以项目的翻译语言分类存储的）
-    if not os.path.isdir(dir_name):
-        os.makedirs(dir_name)
-    with open(dir_name+'/data.txt','a',encoding='utf-8') as f:#存储为txt文件
+    dirname= dir_name+'{}'.format(trans)#改成你的文件目录（注意这是以项目的翻译语言分类存储的）
+    if not os.path.isdir(dirname):
+        os.makedirs(dirname)
+    with open(dirname+'/data.txt','a',encoding='utf-8') as f:#存储为txt文件
         f.write(json.dumps(infos,ensure_ascii=False)+'\n')
         f.close()
 
