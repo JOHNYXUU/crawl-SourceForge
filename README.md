@@ -9,14 +9,10 @@ here is the url https://sourceforge.net/directory/language:java/os:linux/
 if you want to use this program,please read tips below:
 
 1
-        if you want to crawl other categories , just change the url in config.py
+        if you want to crawl other categories ,  change the url in config.py
 
-        However,please do not select any selections of translations,
+        and change the url in spider.py line 44
         
-        because i use it to classfiy those projects
-
-        if you use selections of translations,this code will turn into error
-
 2
         please control the number of projects that in your category
         
@@ -24,8 +20,14 @@ if you want to use this program,please read tips below:
         
         this code will turn into error,too(:)sorry,i am a newbie for python)
 
-
+        advice:no more then 25000 in English category
+        
 3
+        remember too change the dir_name in your PC
+        
+        in spider.py line 160
+        
+4
         You can now crawl these information (for now):
 
                 name
