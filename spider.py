@@ -8,6 +8,8 @@ import os
 from config import*
 from time import perf_counter
 
+translation = []
+
 def get_page_text(url):
     try:
         res = requests.get(url)
@@ -15,8 +17,41 @@ def get_page_text(url):
             return res.text
         return None
     except RE:
-        print('ERROR when requesting this page{}'.format(url))
+        print('ERROR when requesting this page {}'.format(url))
         return  None
+
+def get_translation_type(html):
+    url_heads = []
+    doc = pq(html)
+    items = doc.find('#facet-natlanguage li').items()
+    for item in items:
+        if item.text() != 'More...':
+            if item.text().split(' ')[1] == '(Simplified)':
+                type = item.text().split(' ')[0].lower() + 'simplified'
+            elif item.text().split(' ')[1] == '(Traditional)':
+                type = item.text().split(' ')[0].lower() + 'traditional'
+            elif item.text().split(' ')[1][0] != "(":
+                type = item.text().split(' ')[0].lower() + '-' + item.text().split(' ')[1].lower()
+            else:
+                type = item.text().split(' ')[0].lower()
+            translation.append(type)
+            url_heads.append("https://sourceforge.net/directory/natlanguage:{}/language:java/os:linux/".format(type))
+    return url_heads
+
+def get_page_num(url_head):
+    left = 1
+    right = 999
+    mid = (left + right)//2
+    while(left<right):
+        url = url_head + '?page={}'.format(mid)
+        html = get_page_text(url)
+        doc = pq(html)
+        if 'No results found.' in doc.find('.project_info').text():
+            right = mid - 1
+        else:
+            left = mid + 1
+        mid = (left + right)//2
+    return mid-1
 
 def get_item_index(html):
     doc = pq(html)
@@ -27,6 +62,7 @@ def get_item_index(html):
             index = item_index_head + index_tail
             yield index
 
+
 def get_item_user_ratings(doc):
     dimensional_ratings = doc('.dimensional-ratings .dimensional-rating').items()
     user_ratings = {
@@ -35,7 +71,7 @@ def get_item_user_ratings(doc):
         'star_4': doc('.stars-4 .rating-label').text(),
         'star_3': doc('.stars-3 .rating-label').text(),
         'star_2': doc('.stars-2 .rating-label').text(),
-        'star_1': doc('.stars-1 .rating-label').text(),
+        'star_1': doc('.stars-1 .rating-label').text()
     }
     for dimensional_rating in dimensional_ratings:
         type = dimensional_rating.find('.label').text()
@@ -110,25 +146,41 @@ def get_item_information(item_html,index):
     }
     return item_infos
 
-def write_to_file(infos):
-    with open('C:\\Users\\11634\\Desktop\\Python\\爬虫\\实战\\SourceForgelinxjava\\data.txt','a',encoding='utf-8') as f:
+def write_to_file(infos,url_head):
+    trans = ''
+    for type in translation:
+        if type in url_head:
+            trans += type
+            break
+    dir_name = '/root/SourceForgelinxjava/data/{}'.format(trans)
+    if not os.path.isdir(dir_name):
+        os.makedirs(dir_name)
+    with open(dir_name+'/data.txt','a',encoding='utf-8') as f:
         f.write(json.dumps(infos,ensure_ascii=False)+'\n')
         f.close()
 
-def main(page):
+def main_process(page,url_head):
     url = url_head + '?page={}'.format(page)
     html = get_page_text(url)
     indexs = get_item_index(html)
     for index in indexs:
         item_html = get_page_text(index)
         infors = get_item_information(item_html,index)
-        write_to_file(infors)
+        write_to_file(infors,url_head)
 
-if __name__ == '__main__':
+def main():
     start = perf_counter()
-    groups = [x for x in range(1, 999)]
-    pool = Pool()
-    pool.map(main, groups)
+    html = get_page_text(url)
+    url_heads = get_translation_type(html)
+    for url_head in url_heads:
+        page = get_page_num(url_head)
+        for i in range(page):
+            main_process(i+1,url_head)
     end = perf_counter()
     time_consumed = end - start
     print(time_consumed)
+    with open('/root/SourceForgelinxjava/time.txt','a',encoding='utf-8') as f:
+        f.write(time_consumed)
+        f.close()
+if __name__ == '__main__':
+    main()
