@@ -19,7 +19,9 @@ if you want to use this program,please read tips below:
 2
         please control the number of projects that in your category
         
-        the number of projects that in your category is too large,this code will turn into error,too(:)sorry,i am a newbie for python)
+        if the number of projects that in your category is too large,
+        
+        this code will turn into error,too(:)sorry,i am a newbie for python)
 
 
 3
