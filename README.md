@@ -1,5 +1,5 @@
 # crawl-SourceForge
-##Summary:
+## Summary:
 
 ---
 This is a file for crawling information of projects on **SourceForge**.
@@ -9,7 +9,7 @@ In this repository , i just crawled projects of **java in linux**
 Here is the url https://sourceforge.net/directory/language:java/os:linux/
 
 ---
-##To use this program,please follow steps below:
+## To use this program,please follow steps below:
 
 ---
 ###    1 if you want to crawl other categories :
@@ -32,7 +32,7 @@ Here is the url https://sourceforge.net/directory/language:java/os:linux/
         
 ###      4 run spider.py in pycharm or other IDE 
 
-##Information you can crawl (for now):
+## Information you can crawl (for now):
 
         name
         summary
