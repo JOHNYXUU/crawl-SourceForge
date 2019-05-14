@@ -8,19 +8,19 @@ import os
 from config import*
 from time import perf_counter
 
-translation = []
+translation = []#用于存放所有翻译语言的名称
 
-def get_page_text(url):
+def get_page_text(url): #用于获取页面HTML代码的text
     try:
         res = requests.get(url)
         if res.status_code == 200:
             return res.text
         return None
     except RE:
-        print('ERROR when requesting this page {}'.format(url))
+        print('ERROR when requesting this page {}'.format(url))#假如无法请求，报错，同时输出错误网页的网址
         return  None
 
-def get_translation_type(html):
+def get_translation_type(html):#用于获得
     url_heads = []
     doc = pq(html)
     items = doc.find('#facet-natlanguage li').items()
@@ -30,6 +30,14 @@ def get_translation_type(html):
                 type = item.text().split(' ')[0].lower() + 'simplified'
             elif item.text().split(' ')[1] == '(Traditional)':
                 type = item.text().split(' ')[0].lower() + 'traditional'
+            elif 'Brazilian Portuguese' in item.text():
+                type = 'portuguesebrazilian'
+            elif 'Slovene' in item.text():
+                type = 'slovenian'
+            elif 'Irish Gaelic' in item.text():
+                type = 'irish_gaelic'
+            elif 'Scottish Gaelic' in item.text():
+                type = 'scottish-gaelic'
             elif item.text().split(' ')[1][0] != "(":
                 type = item.text().split(' ')[0].lower() + '-' + item.text().split(' ')[1].lower()
             else:
@@ -61,7 +69,6 @@ def get_item_index(html):
         if index_tail:
             index = item_index_head + index_tail
             yield index
-
 
 def get_item_user_ratings(doc):
     dimensional_ratings = doc('.dimensional-ratings .dimensional-rating').items()
