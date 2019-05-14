@@ -20,7 +20,7 @@ if you want to use this program,please read tips below:
         
         this code will turn into error,too(:)sorry,i am a newbie for python)
 
-        advice:no more then 25000 in English category
+        advice:no more than 25000 in English category
         
 3
         remember too change the dir_name in your PC
