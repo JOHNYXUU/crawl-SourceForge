@@ -12,14 +12,30 @@ translation = []#用于存放所有翻译语言的名称
 maxtimes = 5 #设置最大请求次数
 
 def get_page_text(url): #用于获取页面HTML代码的text
-    try:
-        res = requests.get(url)
-        if res.status_code == 200:
-            return res.text
-        return None
-    except RE:
-        print('ERROR when requesting this page {}'.format(url))#假如无法请求，报错，同时输出错误网页的网址
-        return  None
+    times = maxtimes
+    while times:
+        try:
+            res = requests.get(url)
+            if res.status_code == 200:
+                return res.text
+            else:
+                times -= 1
+                if times == 0:
+                    with open('/root/SourceForgelinxjava/timeanderror.txt', 'a', encoding='utf-8') as f:
+                        f.write(url)
+                        f.close()
+                    return None
+                else:
+                    continue
+        except RE:
+            times -= 1
+            if times == 0:
+                with open('/root/SourceForgelinxjava/timeanderror.txt', 'a', encoding='utf-8') as f:
+                    f.write(url)
+                    f.close()                #假如无法请求，报错，同时存储错误网页的网址
+                return  None
+            else:
+                continue
 
 def get_translation_type(html):#用于获得翻译语言的类型，和原始的url组成新的url_head，为的是处理项目数目过多而导致的999页后无法浏览
     url_heads = []#存放所有的url_head
@@ -74,9 +90,9 @@ def get_page_num(url_head):#利用二分法求这种翻译语言下的项目共�
 
 
 def get_item_index(html,url):#获得某个项目的网址
-    times = maxtimes
-    while times:
-        try:
+    # times = maxtimes
+    # while times:
+    #     try:
             doc = pq(html)
             items = doc('#pg_directory .off-canvas-content .l-two-column-page .l-content-column .m-project-search-results li').items()
             for item in items:
@@ -84,14 +100,15 @@ def get_item_index(html,url):#获得某个项目的网址
                 if index_tail:
                     index = item_index_head + index_tail
                     yield index
-        except:
-            times -= 1
-            if times == 0:#假如五次依然不行，就返回页数为0,并且记录这个网页
-                with open('/root/SourceForgelinxjava/timeanderror.txt', 'a', encoding='utf-8') as f:
-                    f.write(url)
-                    f.close()
-            else:
-                continue
+        # except:
+        #     times -= 1
+        #     if times == 0:#假如五次依然不行，就返回页数为0,并且记录这个网页
+        #         with open('/root/SourceForgelinxjava/timeanderror.txt', 'a', encoding='utf-8') as f:
+        #             f.write(url)
+        #             f.close()
+        #             return  None
+        #     else:
+        #         continue
 
 def get_item_user_ratings(doc):#获得项目的星级评价，包括平均星数和每个级别有几个人给
     dimensional_ratings = doc('.dimensional-ratings .dimensional-rating').items()
@@ -198,7 +215,11 @@ def main_process(page,url_head):#获得分类网址后的主要过程
             item_html = get_page_text(index)
             infors = get_item_information(item_html,index)
             write_to_file(infors,url_head)
+        print(url+' is ok')
     except:
+        with open('/root/SourceForgelinxjava/timeanderror.txt', 'a', encoding='utf-8') as f:
+            f.write(url)
+            f.close()
         pass
 
 def main():
