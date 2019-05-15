@@ -77,7 +77,7 @@ def get_page_num(url_head):#利用二分法求这种翻译语言下的项目共�
                 else:
                     left = mid + 1
                 mid = (left + right)//2
-                return mid-1
+            return mid-1
         except:
             times -= 1
             if times == 0:#假如五次依然不行，就返回页数为0,并且记录这个网页
