@@ -90,25 +90,13 @@ def get_page_num(url_head):#利用二分法求这种翻译语言下的项目共�
 
 
 def get_item_index(html,url):#获得某个项目的网址
-    # times = maxtimes
-    # while times:
-    #     try:
-            doc = pq(html)
-            items = doc('#pg_directory .off-canvas-content .l-two-column-page .l-content-column .m-project-search-results li').items()
-            for item in items:
-                index_tail = item.find('.result-heading-texts a').attr('href')
-                if index_tail:
-                    index = item_index_head + index_tail
-                    yield index
-        # except:
-        #     times -= 1
-        #     if times == 0:#假如五次依然不行，就返回页数为0,并且记录这个网页
-        #         with open('/root/SourceForgelinxjava/timeanderror.txt', 'a', encoding='utf-8') as f:
-        #             f.write(url)
-        #             f.close()
-        #             return  None
-        #     else:
-        #         continue
+    doc = pq(html)
+    items = doc('#pg_directory .off-canvas-content .l-two-column-page .l-content-column .m-project-search-results li').items()
+    for item in items:
+        index_tail = item.find('.result-heading-texts a').attr('href')
+        if index_tail:
+            index = item_index_head + index_tail
+            yield index
 
 def get_item_user_ratings(doc):#获得项目的星级评价，包括平均星数和每个级别有几个人给
     dimensional_ratings = doc('.dimensional-ratings .dimensional-rating').items()
