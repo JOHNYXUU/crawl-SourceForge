@@ -23,16 +23,16 @@ To use this program, please follow the steps below:
 ## Information you can crawl (for now):
 
 ````yml
-name
-summary
-user-ratings:   average rating
-                number of stars(1 star  ... and 5 stars)
-                dimensional_ratings
-Categories(may be none)
-License(may be none)
-user_reviews (may be none) :  
-                for each user:  user_name
-                                number of stars
-                                review
-                                the number of people thinking it useful (maybe none)
+name 项目名称
+summary 项目概括
+user-ratings:   average rating 项目平均星数
+                number of stars(1 star  ... and 5 stars) 每个级别的星星所给的人数
+                dimensional_ratings 维度评价
+Categories(may be none) 分类（可能无）
+License(may be none) 执照（可能无）
+user_reviews (may be none) :  用户评价（可能无）
+                for each user:  user_name 用户名
+                                number of stars 所给的星星数目
+                                review  评价
+                                the number of people thinking it useful (maybe none) 觉得有用的人（可能无）
 ````
