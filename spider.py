@@ -181,7 +181,12 @@ def get_item_information(item_html,index):#获得项目所有信息的总框架
     }
     return item_infos
 
-def write_to_file(infos,url_head):#写入本地文件
+def get_item_name(item_html):#获得项目所有信息的总框架
+    doc = pq(item_html)
+    name = doc('.title h1').text()#名称
+    return name
+
+def write_to_file(infos,name,url_head):#写入本地文件
     trans = ''
     for type in translation:
         if type in url_head:
@@ -190,7 +195,7 @@ def write_to_file(infos,url_head):#写入本地文件
     dirname= dir_name+'{}'.format(trans)#改成你的文件目录（注意这是以项目的翻译语言分类存储的）
     if not os.path.isdir(dirname):
         os.makedirs(dirname)
-    with open(dirname+'/data.txt','a',encoding='utf-8') as f:#存储为txt文件
+    with open(dirname+'/{}.txt'.format(name),'a',encoding='utf-8') as f:#存储为txt文件
         f.write(json.dumps(infos,ensure_ascii=False)+'\n')
         f.close()
 
@@ -202,7 +207,8 @@ def main_process(page,url_head):#获得分类网址后的主要过程
         for index in indexs:
             item_html = get_page_text(index)
             infors = get_item_information(item_html,index)
-            write_to_file(infors,url_head)
+            name = get_item_name(item_html)
+            write_to_file(infors,name,url_head)
         print(url+' is ok')
     except:
         with open('/root/SourceForgelinxjava/timeanderror.txt', 'a', encoding='utf-8') as f:
