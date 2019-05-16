@@ -21,7 +21,7 @@ def get_page_text(url): #用于获取页面HTML代码的text
             else:
                 times -= 1
                 if times == 0:
-                    with open('/root/SourceForgelinxjava/timeanderror.txt', 'a', encoding='utf-8') as f:
+                    with open(dir_name+'timeanderror.txt', 'a', encoding='utf-8') as f:
                         f.write(url+'\n')
                         f.close()
                     return None
@@ -30,7 +30,7 @@ def get_page_text(url): #用于获取页面HTML代码的text
         except RE:
             times -= 1
             if times == 0:
-                with open('/root/SourceForgelinxjava/timeanderror.txt', 'a', encoding='utf-8') as f:
+                with open(dir_name+'timeanderror.txt', 'a', encoding='utf-8') as f:
                     f.write(url+'\n')
                     f.close()                #假如无法请求，报错，同时存储错误网页的网址
                 return  None
@@ -81,13 +81,12 @@ def get_page_num(url_head):#利用二分法求这种翻译语言下的项目共�
         except:
             times -= 1
             if times == 0:#假如五次依然不行，就返回页数为0,并且记录这个网页
-                with open('/root/SourceForgelinxjava/timeanderror.txt', 'a', encoding='utf-8') as f:
+                with open(dir_name+'timeanderror.txt', 'a', encoding='utf-8') as f:
                     f.write(url_head)
                     f.close()
                 return 0
             else:
                 continue
-
 
 def get_item_index(html):#获得某个项目的网址
     doc = pq(html)
@@ -211,7 +210,7 @@ def main_process(page,url_head):#获得分类网址后的主要过程
                 write_to_file(infors,name.replace('/',''),url_head)
         print(url+' is ok')
     except:
-        with open('/root/SourceForgelinxjava/timeanderror.txt', 'a', encoding='utf-8') as f:
+        with open(dir_name+'timeanderror.txt', 'a', encoding='utf-8') as f:
             f.write(url+'\n'+'in main_process')
             f.close()
         pass
@@ -227,7 +226,7 @@ def main():
     print(happy_end)
     end = perf_counter()#用于计算时间的花费
     time_consumed = end - start#用于计算时间的花费
-    with open('/root/SourceForgelinxjava/time.txt','a',encoding='utf-8') as f:
+    with open(dir_name+'time.txt','a',encoding='utf-8') as f:
         f.write("all works are done!\n")
         f.write('{}'.format(time_consumed)+' s')
         f.close()
