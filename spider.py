@@ -89,7 +89,7 @@ def get_page_num(url_head):#利用二分法求这种翻译语言下的项目共�
                 continue
 
 
-def get_item_index(html,url):#获得某个项目的网址
+def get_item_index(html):#获得某个项目的网址
     doc = pq(html)
     items = doc('#pg_directory .off-canvas-content .l-two-column-page .l-content-column .m-project-search-results li').items()
     for item in items:
@@ -203,16 +203,16 @@ def main_process(page,url_head):#获得分类网址后的主要过程
     url = url_head + '?page={}'.format(page)
     html = get_page_text(url)
     try:
-        indexs = get_item_index(html,url)
+        indexs = get_item_index(html)
         for index in indexs:
             item_html = get_page_text(index)
             infors = get_item_information(item_html,index)
             name = get_item_name(item_html)
-            write_to_file(infors,name,url_head)
+            write_to_file(infors,name.replace('/',''),url_head)
         print(url+' is ok')
     except:
         with open('/root/SourceForgelinxjava/timeanderror.txt', 'a', encoding='utf-8') as f:
-            f.write(url+'\n')
+            f.write(url+'\n'+'in main_process')
             f.close()
         pass
 
