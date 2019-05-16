@@ -37,4 +37,4 @@ user_reviews (may be none) :  用户评价（可能无）
                                 the number of people thinking it useful (maybe none) 觉得有用的人（可能无）
 ````
 ## Speed
-For 10000 items ，it takes about 2h (in 10Mbps).
+For 10000 items ，it takes about 1.7h (in 10Mbps).
