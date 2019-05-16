@@ -205,10 +205,10 @@ def main_process(page,url_head):#获得分类网址后的主要过程
     try:
         indexs = get_item_index(html)
         for index in indexs:
-            item_html = get_page_text(index)
-            infors = get_item_information(item_html,index)
-            name = get_item_name(item_html)
-            write_to_file(infors,name.replace('/',''),url_head)
+                item_html = get_page_text(index)
+                infors = get_item_information(item_html,index)
+                name = get_item_name(item_html)
+                write_to_file(infors,name.replace('/',''),url_head)
         print(url+' is ok')
     except:
         with open('/root/SourceForgelinxjava/timeanderror.txt', 'a', encoding='utf-8') as f:
