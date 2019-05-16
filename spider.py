@@ -22,7 +22,7 @@ def get_page_text(url): #用于获取页面HTML代码的text
                 times -= 1
                 if times == 0:
                     with open('/root/SourceForgelinxjava/timeanderror.txt', 'a', encoding='utf-8') as f:
-                        f.write(url)
+                        f.write(url+'\n')
                         f.close()
                     return None
                 else:
@@ -31,7 +31,7 @@ def get_page_text(url): #用于获取页面HTML代码的text
             times -= 1
             if times == 0:
                 with open('/root/SourceForgelinxjava/timeanderror.txt', 'a', encoding='utf-8') as f:
-                    f.write(url)
+                    f.write(url+'\n')
                     f.close()                #假如无法请求，报错，同时存储错误网页的网址
                 return  None
             else:
@@ -206,7 +206,7 @@ def main_process(page,url_head):#获得分类网址后的主要过程
         print(url+' is ok')
     except:
         with open('/root/SourceForgelinxjava/timeanderror.txt', 'a', encoding='utf-8') as f:
-            f.write(url)
+            f.write(url+'\n')
             f.close()
         pass
 
@@ -218,10 +218,12 @@ def main():
         page = get_page_num(url_head)
         for i in range(page):
             main_process(i+1,url_head)
+    print(happy_end)
     end = perf_counter()#用于计算时间的花费
     time_consumed = end - start#用于计算时间的花费
     with open('/root/SourceForgelinxjava/time.txt','a',encoding='utf-8') as f:
-        f.write(time_consumed)
+        f.write("all works are done!\n")
+        f.write('{}'.format(time_consumed)+' s')
         f.close()
 if __name__ == '__main__':
     main()
