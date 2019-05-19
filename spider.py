@@ -162,14 +162,20 @@ def get_item_information(item_html,index):#获得项目所有信息的总框架
     summary = doc('.main-content .description').text()#总结
     summary = summary.replace('\n','')
     user_ratings = get_item_user_ratings(doc)#用户评价
-    try:
-        Categories = doc('.main-content .row.psp-section .small-12.medium-5.columns').text().split('\n')[1].replace('License','')#项目的分类，可能没有
-    except:
-        Categories = ''
-    try:
-        License = doc('.main-content .row.psp-section .small-12.medium-5.columns').text().split('\n')[2]#项目的License，也可能没有
-    except:
-        License = ''
+    CandL = doc('.main-content .row.psp-section .small-12.medium-5.columns').text()#Category和License都在这里
+    if (('Categories' in CandL) and ('License' in CandL)):#Category和License都有
+        Categories = doc('.main-content .row.psp-section .small-12.medium-5.columns').text().split('\n')[1].replace('License', '')
+        License = doc('.main-content .row.psp-section .small-12.medium-5.columns').text().split('\n')[2]
+    elif (('Categories' in CandL) or ('License' in CandL)):
+        if ('Categories' in CandL):#只有Category
+            Categories = doc('.main-content .row.psp-section .small-12.medium-5.columns').text().split('\n')[1]
+            License = ''
+        else:#只有License
+            License = doc('.main-content .row.psp-section .small-12.medium-5.columns').text().split('\n')[1]
+            Categories = ''
+    else:#都没有
+        Categories = License =''
+
     item_infos = {
         'name':name,
         'summary':summary,
@@ -180,12 +186,7 @@ def get_item_information(item_html,index):#获得项目所有信息的总框架
     }
     return item_infos
 
-def get_item_name(item_html):#获得项目所有信息的总框架
-    doc = pq(item_html)
-    name = doc('.title h1').text()#名称
-    return name
-
-def write_to_file(infos,name,url_head):#写入本地文件
+def write_to_file(infos,url_head):#写入本地文件
     trans = ''
     for type in translation:
         if type in url_head:
@@ -194,7 +195,7 @@ def write_to_file(infos,name,url_head):#写入本地文件
     dirname= dir_name+'{}'.format(trans)#改成你的文件目录（注意这是以项目的翻译语言分类存储的）
     if not os.path.isdir(dirname):
         os.makedirs(dirname)
-    with open(dirname+'/{}.txt'.format(name),'a',encoding='utf-8') as f:#存储为txt文件
+    with open(dirname+'/data.txt','a',encoding='utf-8') as f:#存储为txt文件
         f.write(json.dumps(infos,ensure_ascii=False)+'\n')
         f.close()
 
@@ -206,8 +207,7 @@ def main_process(page,url_head):#获得分类网址后的主要过程
         for index in indexs:
                 item_html = get_page_text(index)
                 infors = get_item_information(item_html,index)
-                name = get_item_name(item_html)
-                write_to_file(infors,name.replace('/',''),url_head)
+                write_to_file(infors,url_head)
         print(url+' is ok')
     except:
         with open(dir_name+'timeanderror.txt', 'a', encoding='utf-8') as f:
