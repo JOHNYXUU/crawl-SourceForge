@@ -4,3 +4,8 @@ dir_name = '/root/SourceForgelinxjava/data/'#改成你的目录
 happy_end = "all works are done!\n" \
             "please remember to check whether any pages went into error in file timeanderror" \
             "you can also check the time this project takes in file timeanderror"
+
+mysql_proxy = ''
+mysql_username = ''
+mysql_passwords = ''
+mysql_database = ''
