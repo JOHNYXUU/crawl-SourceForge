@@ -226,9 +226,10 @@ def main():
     print(happy_end)
     end = perf_counter()#用于计算时间的花费
     time_consumed = end - start#用于计算时间的花费
-    with open(dir_name+'time.txt','a',encoding='utf-8') as f:
+    with open(dir_name+'timeanderror.txt','a',encoding='utf-8') as f:
         f.write("all works are done!\n")
         f.write('{}'.format(time_consumed)+' s')
         f.close()
+
 if __name__ == '__main__':
     main()
