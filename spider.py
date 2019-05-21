@@ -7,9 +7,12 @@ import re
 import os
 from config import*
 from time import perf_counter
+import  pymysql
+import pymysql.cursors
 
 translation = []#用于存放所有翻译语言的名称
 maxtimes = 5 #设置最大请求次数
+id = 1
 
 def get_page_text(url): #用于获取页面HTML代码的text
     times = maxtimes
@@ -107,6 +110,10 @@ def get_item_user_ratings(doc):#获得项目的星级评价，包括平均星数
         'star_2': doc('.stars-2 .rating-label').text(),
         'star_1': doc('.stars-1 .rating-label').text()
     }
+    user_ratings['ease']=''
+    user_ratings['features'] = ''
+    user_ratings['design'] = ''
+    user_ratings['support'] = ''
     for dimensional_rating in dimensional_ratings:#获得项目的dimensional_rating，就是项目网页中星级评价右边那个
         type = dimensional_rating.find('.label').text()
         user_ratings[type] = dimensional_rating.find('.rating-score .dim-rate').text() + '/5'
@@ -149,9 +156,9 @@ def get_user_reviews(index):#获得用户的评价，汇总了上面两个评价
                     review_infos['review_txt'] = user.find('.review-txt-outer .review-txt').text()#评价内容
                     helpful_cnt = user.find('.helpful-count .user-count').text()#认为该评价有用的人数
                     if helpful_cnt:
-                        review_infos['help-count'] = helpful_cnt
+                        review_infos['help_count'] = helpful_cnt
                     else:
-                        review_infos['help-count'] = '0'
+                        review_infos['help_count'] = '0'
                     users_reviews[user_name] = review_infos
         page += 1
     return  users_reviews
@@ -179,9 +186,9 @@ def get_item_information(item_html,index):#获得项目所有信息的总框架
     item_infos = {
         'name':name,
         'summary':summary,
-        'user-ratings':user_ratings,
+        'user_ratings':user_ratings,
         'Categories':Categories,
-        'License':License,
+        'Licenses':License,
         'user_reviews':get_user_reviews(index)
     }
     return item_infos
@@ -199,6 +206,58 @@ def write_to_file(infos,url_head):#写入本地文件
         f.write(json.dumps(infos,ensure_ascii=False)+'\n')
         f.close()
 
+def create_table():
+    db = pymysql.connect(mysql_host, mysql_username, mysql_passwords, mysql_database)
+    # 使用cursor()方法获取操作游标
+    cursor = db.cursor()
+    try:
+        cursor.execute(table_1)
+        cursor.execute(table_2)
+        cursor.execute(table_3)
+        db.commit()
+    except Exception as e:
+        print(e)
+    db.close()
+
+def save_to_mysql(item_infos):
+    # 打开数据库连接
+    global id
+    db = pymysql.connect(mysql_host,mysql_username,mysql_passwords,mysql_database)
+    # 使用cursor()方法获取操作游标
+    cursor = db.cursor()
+    # SQL 插入语句
+    sql_1 = "INSERT INTO briefintro (name, \
+           summary, Categories,Licenses) \
+           VALUES ('{0}','{1}','{2}','{3}')"\
+            .format(pymysql.escape_string(item_infos['name']),pymysql.escape_string(item_infos['summary']),item_infos['Categories'],item_infos['Licenses'])
+
+    sql_2 = "INSERT INTO userratings (average,num_of_5stars,num_of_4stars,num_of_3stars,num_of_2stars,num_of_1star, \
+           Ease,Features,Design,Support) \
+           VALUES ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}')"\
+            .format(item_infos['user_ratings']['average'],item_infos['user_ratings']['star_5'],item_infos['user_ratings']['star_4'],
+                    item_infos['user_ratings']['star_3'],item_infos['user_ratings']['star_2'],item_infos['user_ratings']['star_1'],
+                    item_infos['user_ratings']['ease'],item_infos['user_ratings']['features'],item_infos['user_ratings']['design'],item_infos['user_ratings']['support'])
+    try:
+        cursor.execute(sql_1)
+        cursor.execute(sql_2)
+        db.commit()
+        for user in item_infos['user_reviews']:
+            sql_3 = "INSERT INTO userreviews (id,nickname,num_of_stars, \
+                       date,review_txt,helpful_cnt) \
+                       VALUES ({0},'{1}',{2},'{3}','{4}','{5}')" \
+                .format(id,user,item_infos['user_reviews'][user]['stars'],item_infos['user_reviews'][user]['date'],
+                        pymysql.escape_string(item_infos['user_reviews'][user]['review_txt']),item_infos['user_reviews'][user]['help_count'])
+            cursor.execute(sql_3)
+            db.commit()
+        id += 1
+    except Exception as e:
+        print('{}'.format(item_infos['name']),end=' ')
+        print(e)
+
+    # 关闭数据库连接
+    db.close()
+
+
 def main_process(page,url_head):#获得分类网址后的主要过程
     url = url_head + '?page={}'.format(page)
     html = get_page_text(url)
@@ -207,9 +266,12 @@ def main_process(page,url_head):#获得分类网址后的主要过程
         for index in indexs:
                 item_html = get_page_text(index)
                 infors = get_item_information(item_html,index)
-                write_to_file(infors,url_head)
+                # write_to_file(infors,url_head)
+                # create_table()
+                # save_to_mysql(infors) 既可以存入本地的txt文件，也可以选择存入mysql
         print(url+' is ok')
-    except:
+    except Exception as e:
+        print(e)
         with open(dir_name+'timeanderror.txt', 'a', encoding='utf-8') as f:
             f.write(url+'\n'+'in main_process')
             f.close()
