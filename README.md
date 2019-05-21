@@ -11,7 +11,7 @@ Here is the url [https://sourceforge.net/directory/language:java/os:linux](https
 ## Usage
 To use this program, please follow the steps below:
 
-1. If you want to crawl other categories, please change the URL in [config.py](./config.py) and change the URL in [spider.py](./spider.py) line 61.   
+1. If you want to crawl other categories, please change the URL in [config.py](./config.py) and change the URL in [spider.py](./spider.py) line 64.   
 2. Please control the number of projects that in your category - If the number of projects that in your category is too large, this code will run into error :( The recommended number is no more than 25000 categories.
 3. Change the `dir_name` in your PC in [config.py](./config.py) .
 4. change the information about your mysql in [config.py](./config.py).
@@ -35,5 +35,13 @@ user_reviews (may be none) :  用户评价（可能无）
                                 review  评价
                                 the number of people thinking it useful (maybe none) 觉得有用的人（可能无）
 ````
+##Storage
+For now you have **2** ways to save those data.
+
+1.mysql
+
+2.txt file in your own computer
+
+
 ## Speed
 For 10000 items ，it takes about 1.7h (in 10Mbps).
