@@ -64,32 +64,32 @@ def get_translation_type(html):#用于获得翻译语言的类型，和原始的
             url_heads.append("https://sourceforge.net/directory/natlanguage:{}/language:java/os:linux/".format(type))#和原始的url组成新的url_head，假如找别的分类，这个也要修改成合适的url
     return url_heads
 
-def get_page_num(url_head):#利用二分法求这种翻译语言下的项目共有几页
-    times = maxtimes
-    while times:
-        try:
-            left = 1
-            right = 999#999为上限，因为999页过后不能浏览，所以假如项目的分类不精确，该爬虫爬取信息将不完整
-            mid = (left + right)//2
-            while(left<right):
-                url = url_head + '?page={}'.format(mid)
-                html = get_page_text(url)
-                doc = pq(html)
-                if 'No results found.' in doc.find('.project_info').text():#No results found.为超出页数范围的标志
-                    right = mid - 1
-                else:
-                    left = mid + 1
-                mid = (left + right)//2
-            return mid-1
-        except:
-            times -= 1
-            if times == 0:#假如五次依然不行，就返回页数为0,并且记录这个网页
-                with open(dir_name+'timeanderror.txt', 'a', encoding='utf-8') as f:
-                    f.write(url_head)
-                    f.close()
-                return 0
-            else:
-                continue
+# def get_page_num(url_head):#利用二分法求这种翻译语言下的项目共有几页
+#     times = maxtimes
+#     while times:
+#         try:
+#             left = 1
+#             right = 999#999为上限，因为999页过后不能浏览，所以假如项目的分类不精确，该爬虫爬取信息将不完整
+#             mid = (left + right)//2
+#             while(left<right):
+#                 url = url_head + '?page={}'.format(mid)
+#                 html = get_page_text(url)
+#                 doc = pq(html)
+#                 if 'No results found.' in doc.find('.project_info').text():#No results found.为超出页数范围的标志
+#                     right = mid - 1
+#                 else:
+#                     left = mid + 1
+#                 mid = (left + right)//2
+#             return mid-1
+#         except:
+#             times -= 1
+#             if times == 0:#假如五次依然不行，就返回页数为0,并且记录这个网页
+#                 with open(dir_name+'timeanderror.txt', 'a', encoding='utf-8') as f:
+#                     f.write(url_head)
+#                     f.close()
+#                 return 0
+#             else:
+#                 continue
 
 def get_item_index(html):#获得某个项目的网址
     doc = pq(html)
@@ -206,19 +206,6 @@ def write_to_file(infos,url_head):#写入本地文件
         f.write(json.dumps(infos,ensure_ascii=False)+'\n')
         f.close()
 
-def create_table():
-    db = pymysql.connect(mysql_host, mysql_username, mysql_passwords, mysql_database)
-    # 使用cursor()方法获取操作游标
-    cursor = db.cursor()
-    try:
-        cursor.execute(table_1)
-        cursor.execute(table_2)
-        cursor.execute(table_3)
-        db.commit()
-    except Exception as e:
-        print(e)
-    db.close()
-
 def save_to_mysql(item_infos):
     # 打开数据库连接
     global id
@@ -257,34 +244,35 @@ def save_to_mysql(item_infos):
     # 关闭数据库连接
     db.close()
 
-
-def main_process(page,url_head):#获得分类网址后的主要过程
-    url = url_head + '?page={}'.format(page)
-    html = get_page_text(url)
-    try:
-        indexs = get_item_index(html)
-        for index in indexs:
-                item_html = get_page_text(index)
-                infors = get_item_information(item_html,index)
-                # write_to_file(infors,url_head)
-                # create_table()
-                # save_to_mysql(infors) 既可以存入本地的txt文件，也可以选择存入mysql
-        print(url+' is ok')
-    except Exception as e:
-        print(e)
-        with open(dir_name+'timeanderror.txt', 'a', encoding='utf-8') as f:
-            f.write(url+'\n'+'in main_process')
-            f.close()
-        pass
+def main_process(url_head):#获得分类网址后的主要过程
+    for page in range(999):
+        url = url_head + '?page={}'.format(page+1)
+        html = get_page_text(url)
+        doc = pq(html)
+        if 'No results found.' in doc.find('.project_info').text():
+            break
+        else:
+            try:
+                indexs = get_item_index(html)
+                for index in indexs:
+                        item_html = get_page_text(index)
+                        infors = get_item_information(item_html,index)
+                        # write_to_file(infors,url_head)
+                        save_to_mysql(infors)
+                print(url+' is ok')
+            except Exception as e:
+                print(e)
+                with open(dir_name+'timeanderror.txt', 'a', encoding='utf-8') as f:
+                    f.write(url+'\n'+'in main_process')
+                    f.close()
+                pass
 
 def main():
     start = perf_counter()#用于计算时间的花费
     html = get_page_text(url)
     url_heads = get_translation_type(html)
     for url_head in url_heads:#对于每一个分类，一页一页的爬
-        page = get_page_num(url_head)
-        for i in range(page):
-            main_process(i+1,url_head)
+        main_process(url_head)
     print(happy_end)
     end = perf_counter()#用于计算时间的花费
     time_consumed = end - start#用于计算时间的花费
